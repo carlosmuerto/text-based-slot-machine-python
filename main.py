@@ -104,8 +104,8 @@ def get_bet():
             print("Please enter a number")
     return bet
 
-def main():
-    balance = deposit()
+
+def spin(balance):
     lines = get_number_of_line()
     while True:
         bet = get_bet()
@@ -122,6 +122,20 @@ def main():
     winnings, winnings_lines = check_winnings(slots, lines, bet, SYMBOLS_VALUES)
     print(f"You won ${winnings}.")
     print(f"You won on lines:",*winnings_lines)
+    return winnings - total_bet
+
+
+def main():
+    balance = deposit()
+    while True:
+        print(f"corrent balance ${balance}")
+
+        answer_continue_key = input("Press ENTER to play (q to quit)")
+        if answer_continue_key == "q": 
+            break
+        balance += spin(balance)
+
+    print(f"you left with ${balance}")
 
 if __name__ == "__main__":
     main()
