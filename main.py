@@ -1,4 +1,4 @@
-import rendom
+import random
 
 MAX_LINES = 3
 
@@ -15,6 +15,55 @@ SYMBOLS_COUNT = {
     "D": 8,
 }
 
+SYMBOLS_VALUES = {
+    "A": 5,
+    "B": 4,
+    "C": 3,
+    "D": 2,
+}
+
+def check_winnings(columns, lines, bet, values):
+    winnings = 0
+    winnings_lines = []
+    for line in range(lines):
+        symbol = columns[0][line]
+        for column in columns:
+            symbol_to_check = column[line]
+            if symbol_to_check != symbol:
+                break
+        else: # execute if no else
+            winnings += values[symbol] * bet
+            winnings_lines.append(line + 1)
+    return winnings, winnings_lines
+
+def get_slot_machine_spin(rows,cols,symbols):
+    all_symbols = []
+    for symbol, symbol_count in symbols.items():
+        for _ in range(symbol_count):
+            all_symbols.append(symbol)
+
+    columns = [] 
+    for _ in range(cols):
+        column = []
+        current_symbols = all_symbols[:]
+        for _ in range(rows):
+            value = random.choice(current_symbols)
+            current_symbols.remove(value)
+            column.append(value)
+        
+        columns.append(column)
+    
+    return columns
+
+def pretty_str_columns(columns):
+    return_str = ""
+    for row in range(len(columns[0])):
+        return_str += "\n" if return_str != "" else ""
+        for i,column in enumerate(columns):
+            pipe = " | " if i != len(columns) - 1 else ""
+            return_str += f"{column[row]}{pipe}"
+
+    return return_str
 
 def deposit():
     while True:
@@ -67,6 +116,12 @@ def main():
             break
 
     print(f"you are betting ${bet} on {lines} lines.  total bet is ${total_bet}")
+    slots = get_slot_machine_spin(ROWS,COLS,SYMBOLS_COUNT)
+    # slots = [["A","A","A"],["B","A","A"],["A","A","A"]]
+    print(pretty_str_columns(slots))
+    winnings, winnings_lines = check_winnings(slots, lines, bet, SYMBOLS_VALUES)
+    print(f"You won ${winnings}.")
+    print(f"You won on lines:",*winnings_lines)
 
 if __name__ == "__main__":
     main()
